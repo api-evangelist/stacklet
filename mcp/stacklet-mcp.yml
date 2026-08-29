@@ -1,0 +1,122 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/mcp-server (README.md and stacklet/mcp/*/tools.py)
+name: Stacklet MCP Server
+description: 'Official open-source MCP server published by Stacklet that exposes a
+  Stacklet deployment to an LLM through three toolsets: AssetDB SQL, Platform GraphQL,
+  and deployment documentation.'
+status: published
+deployment:
+  mode: local-stdio
+  install: uv tool install stacklet-mcp
+  install_alternate: pip install stacklet-mcp
+  package: https://pypi.org/project/stacklet-mcp/
+  auth: oauth
+  verified: searched
+  note: 'No hosted or remote MCP endpoint is published. The server runs locally over
+    stdio and authenticates against the customer deployment using credentials written
+    by `stacklet-admin login` (Cognito SSO, or username/password, granting the MCP
+    server access as that user for twelve hours); an API key in STACKLET_API_KEY is
+    the non-interactive alternative. Because there is no vendor-hosted URL, an agent
+    cannot reach Stacklet without a human first installing and authenticating the
+    server on a machine.'
+repository: https://github.com/stacklet/mcp-server
+package_version: 2026.4.0
+package_published: '2026-04-02'
+agent_config:
+  generate: stacklet-mcp agent-config generate $profile
+  profiles:
+  - name: default
+    description: read-only — no AssetDB saves, no archiving, no GraphQL mutations
+  - name: unrestricted
+    description: all edits allowed
+settings:
+- name: STACKLET_MCP_DOWNLOADS_PATH
+  description: directory for storing query result files
+  default: system temp directory
+- name: STACKLET_MCP_ASSETDB_DATASOURCE
+  description: the datasource ID for AssetDB in Redash
+  default: '1'
+- name: STACKLET_MCP_ASSETDB_ALLOW_SAVE
+  description: enable write operations in AssetDB
+  default: 'false'
+- name: STACKLET_MCP_ASSETDB_ALLOW_ARCHIVE
+  description: enable query archiving
+  default: 'false'
+- name: STACKLET_MCP_PLATFORM_ALLOW_MUTATIONS
+  description: enable executing mutations against the Platform GraphQL API
+  default: 'false'
+toolsets:
+- name: assetdb
+  description: SQL queries against AssetDB, Stacklet's cloud asset, cost, tag and
+    relationship warehouse, executed through Redash.
+  tools:
+  - name: assetdb_sql_info
+    write: false
+    description: Guide to the AssetDB schema, indexing and query patterns — read before
+      writing SQL.
+  - name: assetdb_sql_query
+    write: false
+    description: Run an ad-hoc SQL query against AssetDB.
+  - name: assetdb_query_list
+    write: false
+    description: List saved AssetDB queries.
+  - name: assetdb_query_get
+    write: false
+    description: Retrieve a saved AssetDB query.
+  - name: assetdb_query_result
+    write: false
+    description: Fetch the result of a query, with per-format download URLs.
+  - name: assetdb_query_save
+    write: true
+    gated_by: STACKLET_MCP_ASSETDB_ALLOW_SAVE
+    description: Save an AssetDB query.
+  - name: assetdb_query_archive
+    write: true
+    gated_by: STACKLET_MCP_ASSETDB_ALLOW_ARCHIVE
+    description: Archive a saved AssetDB query.
+- name: platform
+  description: Operations against the Stacklet Platform GraphQL API — policies, account
+    groups, bindings, resources, executions.
+  tools:
+  - name: platform_graphql_info
+    write: false
+    description: Guide to the Platform GraphQL schema, connection pagination and filtering.
+  - name: platform_graphql_list_types
+    write: false
+    description: List GraphQL schema types, optionally matching a pattern.
+  - name: platform_graphql_get_types
+    write: false
+    description: Retrieve the definitions of named GraphQL types.
+  - name: platform_graphql_query
+    write: conditional
+    gated_by: STACKLET_MCP_PLATFORM_ALLOW_MUTATIONS
+    description: Execute a GraphQL document; mutations are refused unless mutations are
+      explicitly enabled.
+  - name: platform_dataset_info
+    write: false
+    description: Guide to exporting large datasets out of the Platform API.
+  - name: platform_dataset_export
+    write: false
+    description: Start an asynchronous export of a large connection to a downloadable
+      dataset.
+  - name: platform_dataset_lookup
+    write: false
+    description: Check export progress and retrieve the temporary download URL.
+- name: docs
+  description: Read access to the documentation served by the customer's own deployment
+    at docs.<instance>.stacklet.io.
+  tools:
+  - name: docs_list
+    write: false
+    description: Browse the complete library of Stacklet documentation files.
+  - name: docs_read
+    write: false
+    description: Read one documentation file by path.
+tool_count: 16
+safety:
+  default_posture: read-only
+  note: 'The README carries an explicit data-handling warning — most Stacklet
+    installations contain confidential data and this server exists to feed that data to
+    an LLM — and recommends authenticating as a Stacklet user scoped tightly to the
+    task.'

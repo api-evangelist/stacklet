@@ -1,0 +1,55 @@
+generated: '2026-08-29'
+method: probed
+source: live GET of /.well-known/* on every host named in apis.yml
+note: 'Every /.well-known/ path returned 404 on both stacklet.ai and stacklet.io. The
+  WordPress marketing host answers most 404s with the full 112KB rendered 404 page, so
+  a control probe on a nonsense path was run to establish that shape — the sizes match
+  the real probes exactly, confirming there is no soft-200 catch-all inflating these
+  results. No WellKnown or SecurityTxt pointer is emitted, because nothing was served.
+  The Stacklet API itself is a per-customer deployment at api.<instance>.stacklet.io;
+  no instance host is publicly resolvable, so no API host could be probed.'
+hit_count: 0
+hosts:
+- host: https://stacklet.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://stacklet.io
+  note: redirects to stacklet.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+soft_404_control:
+  path: /.well-known/zzz-control-probe-xyz
+  status: 404
+  bytes: 112776
+  conclusion: 'Control and real probes return identical 404 bodies — the host is not a
+    200 catch-all, and the recorded 404s are genuine absences.'

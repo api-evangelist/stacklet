@@ -1,0 +1,69 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/stacklet-admin#readme, https://github.com/stacklet/terraform-provider-stacklet#readme,
+  https://github.com/stacklet/mcp-server/blob/main/stacklet/mcp/stacklet_auth.py
+note: 'No OpenAPI exists to derive securitySchemes from; this profile is read from the
+  provider''s own first-party clients, which are the published description of how the
+  Platform GraphQL API is authenticated.'
+api: Stacklet Platform API
+endpoint: https://api.{instance}.stacklet.io/
+schemes:
+- id: sso
+  type: oauth2
+  flow: authorization_code
+  description: 'Browser-based single sign-on, brokered by AWS Cognito against the
+    customer''s identity provider. `stacklet-admin login` with no arguments opens a
+    browser, completes the SSO flow, and writes the resulting access and identity tokens
+    to ~/.stacklet/credentials and ~/.stacklet/id.'
+  session_lifetime: 12 hours (as used by the MCP server)
+  identity_provider: AWS Cognito user pool, per deployment
+- id: password
+  type: oauth2
+  flow: password
+  description: '`stacklet-admin login --username <user>` bypasses SSO and prompts for a
+    password; `--password` is available but the docs call it out as less secure because
+    it leaks through shell history and process listings.'
+- id: api_key
+  type: apiKey
+  in: header
+  header: Authorization
+  scheme: Bearer
+  env: STACKLET_API_KEY
+  description: 'Non-interactive API key. The CLI reads it from STACKLET_API_KEY and skips
+    the login step entirely; the Terraform provider takes it as the `api_key` argument or
+    the same environment variable. The provider changelog records that the `Bearer` type
+    was added to the Authorization header in 0.6.1 (2026-01-23).'
+credential_sources:
+  order:
+  - Environment variables — STACKLET_ENDPOINT, STACKLET_ACCESS_TOKEN, STACKLET_IDENTITY_TOKEN
+  - ~/.stacklet/config.json (the `api` key holds the endpoint)
+  - ~/.stacklet/credentials (access token)
+  - ~/.stacklet/id (identity token)
+  note: The Terraform provider and the MCP server both fall back to the credentials
+    written by the stacklet-admin CLI, so a single interactive login authenticates all
+    three clients.
+tokens:
+- name: access_token
+  header: Authorization
+  scheme: Bearer
+- name: identity_token
+  note: Sent alongside the access token; carried in the credentials tuple used by every
+    first-party client.
+service_endpoints:
+  pattern: 'The first `api.` label of the endpoint is replaced with the service name —
+    api.<instance>.stacklet.io becomes docs.<instance>.stacklet.io for documentation.'
+  source: stacklet/mcp/stacklet_auth.py StackletCredentials.service_endpoint
+authorization:
+  model: 'Stacklet users carry roles and role assignments (stacklet_role,
+    stacklet_role_assignment, stacklet_sso_group in the Terraform provider); the MCP
+    server documentation recommends creating a purpose-scoped user rather than reusing an
+    operator account.'
+  scopes_published: false
+  note: No OAuth scope reference is published on any public Stacklet surface, so no
+    scopes/ artifact is emitted.
+gaps:
+- No public authentication reference page — every detail here comes from first-party
+  client repositories rather than a hosted docs site.
+- No /.well-known/openid-configuration or /.well-known/oauth-authorization-server is
+  served on any publicly resolvable Stacklet host (both 404 on stacklet.ai and
+  stacklet.io); the Cognito discovery document lives inside each customer deployment.

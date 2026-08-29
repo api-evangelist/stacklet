@@ -1,0 +1,117 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/stacklet-admin#readme, https://github.com/stacklet/terraform-provider-stacklet,
+  https://registry.terraform.io/providers/stacklet/stacklet/latest/docs, https://github.com/stacklet/mcp-server
+api: Stacklet Platform API
+interface_style: GraphQL
+auth:
+  style: Bearer token in the Authorization header (SSO access token or API key)
+  see: authentication/stacklet-authentication.yml
+pagination:
+  style: Relay cursor connections
+  response_shape: 'data.<collection>.edges[].node, with data.<collection>.pageInfo
+    carrying startCursor, endCursor, hasNextPage and hasPreviousPage.'
+  params:
+  - name: after
+    description: cursor to fetch the page following endCursor
+  - name: before
+    description: cursor to fetch the page preceding startCursor
+  - name: first
+    description: take the first n results
+  - name: last
+    description: take the last n results
+  cli_flags: --after, --before, --first, --last
+  client_override:
+    env: STACKLET_PAGE_SIZE
+    description: Terraform provider environment variable overriding the default page size
+      (added in provider 0.8.0).
+  source: https://github.com/stacklet/stacklet-admin#pagination
+error_envelope:
+  format: GraphQL errors array
+  note: 'The Terraform provider changelog (0.8.2) records that it now surfaces the message
+    returned by the GraphQL API on 400 responses — i.e. the API returns an HTTP 400 with a
+    GraphQL error message rather than a problem+json document. No RFC 9457
+    application/problem+json surface is published, and no public error-code registry
+    exists, so no errors/ artifact is emitted.'
+  rfc9457: false
+request_headers:
+  user_agent: 'The Terraform provider sends a User-Agent header on GraphQL requests
+    (added 0.6.1); no request-id or tracing header is documented.'
+request_id_tracing:
+  documented: false
+idempotency:
+  supported: unknown
+  documented: false
+  note: 'No idempotency key, no retry-safety guidance and no deduplication window is
+    documented on any public Stacklet surface. Mutations follow add/update/remove naming
+    and are declared through Terraform for the resources the provider covers, which makes
+    Terraform state the practical idempotency mechanism for those objects — but that is a
+    property of Terraform, not of the API contract. No Idempotency pointer is emitted.'
+dry_run_mode:
+  supported: true
+  grade: documented
+  mechanism: 'A binding carries a `dry_run` boolean. In dry-run a binding evaluates its
+    policy collection against its account group and reports what would change without
+    executing the policy actions. The Terraform provider exposes it as the `dry_run`
+    argument on stacklet_binding and fixed state preservation for `dry_run = false` in
+    0.6.3.'
+  source: https://registry.terraform.io/providers/stacklet/stacklet/latest/docs/resources/binding
+reversibility:
+  grade: documented
+  note: 'Every create verb on the Platform API has a matching remove verb, and the
+    destructive AssetDB path is soft (archive) rather than hard. No retention or undo
+    window is stated anywhere public, so this grades `documented` and not `verified` — do
+    not assume a restore path exists after a remove.'
+  surfaces:
+  - write: add-account / AddAccount
+    reversal: remove-account / RemoveAccount
+    window: not stated
+  - write: add-account-group / AddAccountGroup
+    reversal: remove-account-group / RemoveAccountGroup
+    window: not stated
+  - write: add-account-group-item
+    reversal: remove-account-group-item
+    window: not stated
+  - write: add-binding / AddBinding
+    reversal: remove-binding / RemoveBinding
+    window: not stated
+    note: 'A binding can also be neutralised without deletion by setting dry_run, and
+      deploy-binding / run-binding are separate verbs from add-binding, so creating a
+      binding does not itself execute policy.'
+  - write: add-policy-collection / AddPolicyCollection
+    reversal: remove-policy-collection / RemovePolicyCollection
+    window: not stated
+  - write: add-policy-collection-item
+    reversal: remove-policy-collection-item
+    window: not stated
+  - write: add-repository / AddRepository
+    reversal: remove-repository / RemoveRepository
+    window: not stated
+  - write: assetdb_query_save (MCP)
+    reversal: assetdb_query_archive (MCP)
+    window: not stated
+    note: 'Archiving is a soft delete of a saved query; both tools are disabled by default
+      and each is gated behind its own environment variable.'
+  - write: 'Cloud Custodian policy actions executed by a deployed binding (stop, delete,
+      tag, resize on the customer''s own cloud resources)'
+    reversal: not provided by the Stacklet API
+    window: not stated
+    note: 'This is the consequential write surface. Reversal, where it exists at all, is a
+      property of the target cloud provider (an EC2 stop is reversible, a snapshot delete
+      is not), and Stacklet''s own mitigation is dry_run plus policy review rather than an
+      undo endpoint.'
+versioning:
+  api: 'No version is carried in the GraphQL endpoint path or in a header; the schema is
+    introspected per deployment. Clients version independently — see
+    changelog/stacklet-changelog.yml.'
+  see: lifecycle/stacklet-lifecycle.yml
+rate_limit_signaling:
+  documented: false
+  see: rate-limits/stacklet-rate-limits.yml
+bulk_export:
+  mechanism: 'Large connections are exported asynchronously — start an export, poll for
+    status, then download from a temporary URL that expires after a few hours.'
+  operations: platform_dataset_export, platform_dataset_lookup
+  source: https://github.com/stacklet/mcp-server/blob/main/stacklet/mcp/platform/tools.py
+output_formats:
+  cli: 'yaml (default) and json, selected with --output.'

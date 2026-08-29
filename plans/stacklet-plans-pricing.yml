@@ -1,0 +1,23 @@
+generated: '2026-08-29'
+method: searched
+source: https://stacklet.ai/ (no pricing page — https://stacklet.ai/pricing/ returns 404),
+  https://aws.amazon.com/marketplace/pp/prodview-za7x2tiyughvm
+plan_count: 0
+note: 'Stacklet publishes no pricing tiers, no rate card and no self-service sign-up. The
+  only conversion path on stacklet.ai is "Get a Demo"; a probe of https://stacklet.ai/pricing/
+  returned 404 and no pricing appears anywhere in the site navigation. The AWS Marketplace
+  listing for the Stacklet Governance-as-Code Platform is live (HTTP 200) but is transacted
+  as a private offer, so it exposes no public unit price either. Enterprise contact-us only.'
+plans: []
+purchase_paths:
+- name: Direct sales
+  url: https://stacklet.ai/get-a-demo/
+  status: 200
+- name: AWS Marketplace (private offer)
+  url: https://aws.amazon.com/marketplace/pp/prodview-za7x2tiyughvm
+  status: 200
+free_tier:
+  available: false
+  note: 'The open-source Cloud Custodian engine Stacklet stewards is free, and Stacklet
+    positions the commercial platform as the managed layer above it — but the platform
+    itself has no free or trial tier published.'

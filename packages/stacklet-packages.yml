@@ -1,0 +1,80 @@
+generated: '2026-08-29'
+method: searched
+source: https://pypi.org/ registry metadata + https://registry.terraform.io/v1/providers/stacklet/stacklet
+note: 'Stacklet publishes no JavaScript, Java, .NET, Ruby, PHP or Rust client. Its
+  distribution is Python (PyPI) plus a Go Terraform provider on the Terraform Registry.
+  Cloud Custodian (c7n, c7n-org, c7n-mailer) is stewarded by Stacklet but is published
+  by the upstream cloud-custodian open-source project, not by Stacklet Inc., so it is
+  recorded under related_open_source rather than as a Stacklet client library.'
+packages:
+- language: python
+  registry: pypi
+  name: stacklet-mcp
+  url: https://pypi.org/project/stacklet-mcp/
+  install: pip install stacklet-mcp
+  official: true
+  version: 2026.4.0
+  published: '2026-04-02'
+  summary: MCP server for the Stacklet environment
+  source: https://github.com/stacklet/mcp-server
+- language: python
+  registry: pypi
+  name: stacklet.client.platform
+  url: https://pypi.org/project/stacklet.client.platform/
+  install: pip install stacklet.client.platform
+  official: true
+  version: 2026.8.10
+  published: '2026-08-11'
+  summary: Stacklet Platform Client — provides the stacklet-admin CLI and a Python client
+  source: https://github.com/stacklet/stacklet-admin
+- language: python
+  registry: pypi
+  name: stacklet.client.sinistral
+  url: https://pypi.org/project/stacklet.client.sinistral/
+  install: pip install stacklet.client.sinistral
+  official: true
+  version: 0.5.37
+  published: '2026-07-24'
+  summary: Sinistral CLI and Python client for Stacklet IaC governance
+  source: https://github.com/stacklet/sinistral-cli
+- language: go
+  registry: terraform-registry
+  name: stacklet/stacklet
+  url: https://registry.terraform.io/providers/stacklet/stacklet/latest
+  install: 'terraform { required_providers { stacklet = { source = "stacklet/stacklet" } } }'
+  official: true
+  version: 0.8.2
+  published: '2026-06-29'
+  summary: Terraform provider for the Stacklet Platform GraphQL API (25 resources, 24 data sources)
+  source: https://github.com/stacklet/terraform-provider-stacklet
+related_open_source:
+- name: c7n
+  registry: pypi
+  url: https://pypi.org/project/c7n/
+  version: 0.9.51
+  published: '2026-05-28'
+  official: false
+  note: Cloud Custodian rules engine — stewarded by Stacklet, published by the upstream
+    cloud-custodian project.
+- name: c7n-org
+  registry: pypi
+  url: https://pypi.org/project/c7n-org/
+  version: 0.6.50
+  published: '2026-05-28'
+  official: false
+- name: c7n-mailer
+  registry: pypi
+  url: https://pypi.org/project/c7n-mailer/
+  version: 0.6.50
+  published: '2026-05-28'
+  official: false
+registries_checked:
+- npm
+- pypi
+- rubygems
+- crates.io
+- packagist
+- nuget
+- maven-central
+- pkg.go.dev
+- terraform-registry

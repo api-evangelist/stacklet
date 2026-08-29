@@ -1,0 +1,81 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/stacklet-admin#readme, https://github.com/stacklet/stacklet-admin
+  (stacklet/client/platform/commands/), https://github.com/stacklet/sinistral-cli#readme
+clis:
+- name: stacklet-admin
+  description: The first-party Stacklet Platform CLI. A Click-based Python tool that
+    wraps the Platform GraphQL API and doubles as the credential broker for the Terraform
+    provider and the MCP server.
+  package: stacklet.client.platform
+  registry: pypi
+  install:
+  - pip install stacklet.client.platform
+  - uv tool install stacklet.client.platform
+  repository: https://github.com/stacklet/stacklet-admin
+  config_file: ~/.stacklet/config.json
+  global_options:
+  - name: --config
+    description: use a custom config file
+  - name: --output
+    description: output format (yaml default, json)
+  - name: --first / --last / --after / --before
+    description: cursor pagination controls on list commands
+  setup:
+  - command: stacklet-admin auto-configure --url https://console.myorg.stacklet.io
+    description: initialise config from a full console URL
+  - command: stacklet-admin auto-configure --url myorg.stacklet.io
+    description: initialise config from a base domain
+  - command: stacklet-admin auto-configure --prefix myorg
+    description: initialise config from a deployment prefix, assuming a .stacklet.io suffix
+  - command: stacklet-admin login
+    description: SSO login through the browser
+  - command: stacklet-admin login --username test-user
+    description: bypass SSO and authenticate with username and password
+  command_groups:
+  - name: account
+    description: Query and mutate cloud accounts
+    commands: [add, list, remove, show, update, validate, validate-all]
+  - name: account-group
+    description: Query and mutate account groups and their membership
+    commands: [add, list, remove, show, update, add-item, remove-item]
+  - name: binding
+    description: Query and mutate bindings of a policy collection to an account group
+    commands: [add, list, remove, show, update, deploy, run]
+  - name: policy
+    description: Query policies
+    commands: [list, show]
+  - name: policy-collection
+    description: Query and mutate policy collections and their membership
+    commands: [add, list, remove, show, update, add-item, remove-item]
+  - name: repository
+    description: Manage policy repositories
+    commands: [add, list, remove, show, process, scan]
+  - name: user
+    description: Manage platform users
+  - name: cube
+    description: Query the Cube semantic layer
+  - name: graphql
+    description: Execute an arbitrary GraphQL document against the Platform API
+  note: 'Command-group and command names are read from the CLI''s own GraphQL snippet
+    classes in stacklet/client/platform/graphql/snippets/, where each snippet declares the
+    CLI name it backs.'
+- name: sinistral
+  description: CLI and Python client for Sinistral, Stacklet's IaC governance / shift-left
+    policy scanning surface.
+  package: stacklet.client.sinistral
+  registry: pypi
+  install:
+  - pip install stacklet.client.sinistral
+  repository: https://github.com/stacklet/sinistral-cli
+  config_file: ~/.stacklet/sinistral/config.json
+  auth: Cognito username/password or SSO — sinistral login
+  commands_seen: [login, projects list]
+  ci_integration: https://github.com/stacklet/sinistral-action
+- name: custodian
+  description: The Cloud Custodian CLI (c7n). Stewarded by Stacklet but published by the
+    upstream open-source project, not by Stacklet Inc.
+  package: c7n
+  registry: pypi
+  official_to_stacklet: false
+  documentation: https://cloudcustodian.io/docs

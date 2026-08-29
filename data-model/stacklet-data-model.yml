@@ -1,0 +1,119 @@
+generated: '2026-08-29'
+method: derived
+source: https://registry.terraform.io/providers/stacklet/stacklet/latest/docs (25 resources,
+  24 data sources) and https://github.com/stacklet/stacklet-admin/tree/main/stacklet/client/platform/graphql/snippets
+note: 'Derived from the entities the official Terraform provider and the official CLI
+  expose, which are the public projection of the Platform GraphQL schema. The schema itself
+  is auth-gated per deployment, so field-level types are not asserted here — only entities
+  and the relationships the provider''s own resource/data-source graph makes explicit.'
+entities:
+- name: Account
+  description: A cloud account (AWS, Azure or GCP) onboarded into Stacklet.
+  id_shape: 'account:<provider>:<key> — e.g. account:aws:123456789012'
+  attributes_seen: [id, key, name, shortName, description, email, path, provider,
+    securityContext, tags, variables]
+  operations: [add-account, list-accounts, show-account, update-account, remove-account,
+    validate-account]
+- name: AccountDiscovery
+  description: A configured mechanism for discovering accounts automatically in AWS, Azure
+    or GCP.
+  variants: [account_discovery_aws, account_discovery_azure, account_discovery_gcp]
+  note: account_discovery_gcp deprecated 2026-06-29 in favour of GCPIntegration.
+- name: AccountGroup
+  description: A named grouping of accounts that a binding targets.
+  operations: [add-account-group, list-account-groups, show-account-group,
+    update-account-group, remove-account-group, add-account-group-item,
+    remove-account-group-item]
+- name: Policy
+  description: A Cloud Custodian policy known to the platform, sourced from a policy
+    repository.
+  operations: [list-policies, show-policy]
+- name: PolicyCollection
+  description: A named set of policies deployed together.
+  operations: [add-policy-collection, list-policy-collections, show-policy-collection,
+    update-policy-collection, remove-policy-collection, add-policy-collection-item,
+    remove-policy-collection-item]
+- name: Binding
+  description: The join of a policy collection to an account group — the unit that is
+    deployed and run, and the object that carries dry_run.
+  attributes_seen: [dry_run]
+  operations: [add-binding, list-bindings, show-binding, update-binding, remove-binding,
+    deploy-binding, run-binding]
+- name: Repository
+  description: A git repository of policy source that the platform scans and processes.
+  operations: [add-repository, list-repository, show-repository, remove-repository,
+    process-repository, scan-repository]
+- name: User
+  description: A platform user.
+- name: SSOGroup
+  description: A group asserted by the customer's identity provider, mapped to platform
+    roles.
+- name: Role
+  description: A permission role.
+- name: RoleAssignment
+  description: The grant of a role to a user or SSO group.
+- name: ReportGroup
+  description: A grouping used for governance reporting.
+- name: NotificationTemplate
+  description: A reusable message template used by notification delivery.
+- name: ConfigurationProfile
+  description: Per-channel delivery configuration for notifications.
+  variants: [email, slack, msteams, jira, servicenow, symphony, account_owners,
+    resource_owner]
+- name: GCPIntegration
+  description: A Google Cloud integration and its surface.
+- name: Platform
+  description: Deployment-level metadata about the Stacklet instance itself (data source
+    only).
+relationships:
+- from: Binding
+  to: PolicyCollection
+  type: belongs_to
+  via: policy collection reference
+- from: Binding
+  to: AccountGroup
+  type: belongs_to
+  via: account group reference
+- from: PolicyCollection
+  to: Policy
+  type: has_many
+  via: policy_collection_mapping / add-policy-collection-item
+- from: AccountGroup
+  to: Account
+  type: has_many
+  via: account_group_mapping / add-account-group-item
+- from: Policy
+  to: Repository
+  type: belongs_to
+  via: policy source repository
+- from: Account
+  to: AccountDiscovery
+  type: belongs_to
+  via: discovery that created the account
+  optional: true
+- from: RoleAssignment
+  to: Role
+  type: belongs_to
+- from: RoleAssignment
+  to: User
+  type: belongs_to
+  optional: true
+- from: RoleAssignment
+  to: SSOGroup
+  type: belongs_to
+  optional: true
+- from: Binding
+  to: NotificationTemplate
+  type: has_many
+  via: notification configuration
+  confidence: medium
+- from: ConfigurationProfile
+  to: NotificationTemplate
+  type: has_many
+  confidence: medium
+adjacent_stores:
+- name: AssetDB
+  description: 'A separate SQL warehouse of cloud resources, costs, tags and relationships,
+    queried through Redash rather than through the Platform GraphQL API. The MCP server
+    treats it as its own toolset with its own schema guide; that schema is not published
+    publicly.'

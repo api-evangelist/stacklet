@@ -1,0 +1,89 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/terraform-provider-stacklet/blob/main/CHANGELOG.md,
+  https://github.com/stacklet/mcp-server/blob/main/NEWS.md, https://api.github.com/repos/stacklet/terraform-provider-stacklet/releases
+note: 'Stacklet publishes no product changelog or release-notes page for the Platform API
+  itself — the GraphQL schema is versionless and introspected per deployment. What is
+  published, and what is captured here, is the per-client changelog kept in each
+  first-party repository. Both files are recorded because they are the only dated public
+  record of Stacklet API-surface change.'
+scheme: mixed
+streams:
+- name: Terraform provider (stacklet/stacklet)
+  scheme: semver
+  current_version: 0.8.2
+  current_date: '2026-06-29'
+  url: https://github.com/stacklet/terraform-provider-stacklet/blob/main/CHANGELOG.md
+  registry: https://registry.terraform.io/providers/stacklet/stacklet/latest
+  release_count: 15
+  entries:
+  - version: 0.8.2
+    date: '2026-06-29'
+    breaking: false
+    deprecations:
+    - stacklet_account_discovery_gcp deprecated in favour of stacklet_gcp_integration
+    highlights:
+    - Surface the message returned by the GraphQL API on 400 errors
+  - version: 0.8.1
+    date: '2026-06-29'
+    breaking: false
+    highlights:
+    - Fix regression on account discovery GraphQL field names
+  - version: 0.8.0
+    date: '2026-06-25'
+    breaking: false
+    additions:
+    - resource stacklet_gcp_integration
+    - data sources stacklet_gcp_integration, stacklet_gcp_integration_surface
+    - STACKLET_PAGE_SIZE environment variable to override default pagination size
+  - version: 0.7.1
+    date: '2026-05-05'
+    breaking: false
+    highlights:
+    - Correct handling of paginated queries (stacklet_role_assignment failures)
+    - Support removal of account discoveries
+  - version: 0.7.0
+    date: '2026-04-27'
+    breaking: false
+    additions:
+    - resources stacklet_user, stacklet_sso_group
+    highlights:
+    - Fix GraphQL query errors in stacklet_role_assignment
+  - version: 0.6.3
+    date: '2026-04-22'
+    breaking: false
+    highlights:
+    - Preserve dry_run = false state to prevent a perpetual plan diff
+  - version: 0.6.2
+    date: '2026-04-09'
+    breaking: false
+    highlights:
+    - Preserve null variables when the API returns an empty object for an account
+  - version: 0.6.1
+    date: '2026-01-23'
+    breaking: false
+    highlights:
+    - Add Bearer type to the Authorization header
+    - Add a User-Agent header to GraphQL requests
+- name: MCP server (stacklet-mcp)
+  scheme: calver on PyPI, dated sections in NEWS.md
+  current_version: 2026.4.0
+  current_date: '2026-04-02'
+  url: https://github.com/stacklet/mcp-server/blob/main/NEWS.md
+  entries:
+  - date: '2026-02-23'
+    breaking: false
+    highlights:
+    - Fix breakage caused by the pydantic-settings 2.13.0 release; pin the dependency
+  - date: '2025-11-17'
+    breaking: false
+    highlights:
+    - Python 3.14 support
+  - version: 0.1.0
+    date: '2025-09-23'
+    breaking: false
+    highlights:
+    - First release — AssetDB, Platform GraphQL and documentation toolsets
+gaps:
+- No changelog for the Platform GraphQL API itself; schema changes reach the public only
+  as knock-on fixes in the Terraform provider changelog.

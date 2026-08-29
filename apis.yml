@@ -1,23 +1,137 @@
 aid: stacklet
 name: Stacklet
-description: 'Stacklet is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Stacklet is a cloud governance company founded by the creators of Cloud
+  Custodian, the open-source rules engine it stewards. Its Governance-as-Code platform
+  runs Cloud Custodian policies as a managed service across AWS, Azure and GCP and adds
+  AssetDB, a SQL-queryable warehouse of cloud resources, costs, tags and relationships;
+  IaC governance for shift-left policy scanning; and the Jun0 agentic layer. The platform
+  is driven by a per-customer GraphQL API served at https://api.<instance>.stacklet.io,
+  a first-party Python CLI (stacklet-admin), an official Terraform provider, and an
+  open-source Model Context Protocol server that exposes AssetDB SQL, Platform GraphQL
+  and documentation tools to AI agents. The company operates its marketing surface at
+  stacklet.ai, to which stacklet.io redirects.'
+image: https://stacklet.ai/wp-content/uploads/2024/09/Social-Share-1.jpg
 url: https://raw.githubusercontent.com/api-evangelist/stacklet/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-29'
 modified: '2026-08-29'
 tags:
 - Company
-apis: []
+- Cloud Governance
+- Cloud Custodian
+- Policy as Code
+- FinOps
+- Cloud Security
+- Compliance
+- Infrastructure as Code
+- Terraform
+- GraphQL
+- Model Context Protocol
+- AWS
+- Azure
+- Google Cloud
+- Agents
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- name: Stacklet Platform API
+  description: 'The Stacklet Platform GraphQL API is the control plane for the governance
+    platform: cloud accounts and account groups, policies and policy collections,
+    bindings (the deployment of a policy collection against an account group), policy
+    repositories, users, SSO groups, roles and role assignments, report groups and
+    notification configuration profiles. It is served per customer deployment at
+    https://api.<instance>.stacklet.io/ and is the surface behind the stacklet-admin
+    CLI, the official Terraform provider, and the Platform toolset of the Stacklet
+    MCP server. Introspection and the published schema require an authenticated
+    deployment, so no anonymous SDL could be captured.'
+  humanURL: https://stacklet.ai/platform-overview/
+  baseURL: https://api.{instance}.stacklet.io/
+  tags:
+  - GraphQL
+  - Cloud Governance
+  - Policy as Code
+  properties:
+  - type: Authentication
+    url: authentication/stacklet-authentication.yml
+  - type: Conventions
+    url: conventions/stacklet-conventions.yml
+  - type: DataModel
+    url: data-model/stacklet-data-model.yml
+  - type: RateLimits
+    url: rate-limits/stacklet-rate-limits.yml
+- name: Stacklet MCP Server
+  description: 'An open-source Model Context Protocol server, published by Stacklet
+    and distributed on PyPI as stacklet-mcp, that grants an LLM three toolsets against
+    a Stacklet deployment: AssetDB SQL queries (ad hoc and saved), Platform GraphQL
+    operations with large dataset export, and read access to the deployment
+    documentation. It runs locally over stdio and authenticates as the user logged in
+    through the stacklet-admin CLI; write operations (saving queries, archiving
+    queries, executing GraphQL mutations) are disabled by default and must be opted
+    into with explicit environment variables.'
+  humanURL: https://github.com/stacklet/mcp-server
+  baseURL: https://api.{instance}.stacklet.io/
+  tags:
+  - Model Context Protocol
+  - Agents
+  properties:
+  - type: MCPServer
+    url: mcp/stacklet-mcp.yml
+  - type: SourceCode
+    url: https://github.com/stacklet/mcp-server
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://stacklet.ai/
+- type: Documentation
+  url: https://registry.terraform.io/providers/stacklet/stacklet/latest/docs
+- type: Blog
+  url: https://stacklet.ai/blog/
+- type: BlogRSS
+  url: https://stacklet.ai/feed/
+- type: Support
+  url: https://stacklet.ai/contact/
+- type: TermsOfService
+  url: https://stacklet.ai/terms-of-service/
+- type: PrivacyPolicy
+  url: https://stacklet.ai/privacy-policy/
+- type: GitHubOrganization
+  url: https://github.com/stacklet
+- type: SourceCode
+  url: https://github.com/stacklet/mcp-server
+- type: MCPServer
+  url: mcp/stacklet-mcp.yml
+- type: Packages
+  url: packages/stacklet-packages.yml
+- type: SDKs
+  url: packages/stacklet-packages.yml
+- type: CLI
+  url: cli/stacklet-cli.yml
+- type: Authentication
+  url: authentication/stacklet-authentication.yml
+- type: Conventions
+  url: conventions/stacklet-conventions.yml
+- type: DataModel
+  url: data-model/stacklet-data-model.yml
+- type: ChangeLog
+  url: changelog/stacklet-changelog.yml
+- type: Lifecycle
+  url: lifecycle/stacklet-lifecycle.yml
+- type: Conformance
+  url: conformance/stacklet-conformance.yml
+- type: LLMsTxt
+  url: llms/stacklet-llms.txt
+- type: Plans
+  url: plans/stacklet-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/stacklet-rate-limits.yml
+- type: DomainSecurity
+  url: security/stacklet-domain-security.yml
+x-enrichment:
+  date: '2026-08-29'
+  status: enriched
+  artifacts_added: 14
+  pass: local-v1

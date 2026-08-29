@@ -1,0 +1,45 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/terraform-provider-stacklet/blob/main/CHANGELOG.md,
+  https://stacklet.ai/, live probes of status.stacklet.io and trust.stacklet.io
+api: Stacklet Platform API
+versioning:
+  api_versioning: none
+  detail: 'The Platform GraphQL API carries no version in its path, no version header and
+    no published deprecation calendar. It is a single-tenant deployment per customer, so
+    the schema in force is whatever that deployment runs; the MCP server and the CLI both
+    introspect it at runtime rather than pinning a version.'
+  client_versioning:
+    terraform_provider: semver, currently 0.8.2 (2026-06-29)
+    cli: calver, stacklet.client.platform 2026.8.10 (2026-08-11)
+    mcp_server: calver, stacklet-mcp 2026.4.0 (2026-04-02)
+deprecation:
+  policy_published: false
+  sunset_header: not documented
+  rfc8594: false
+  observed:
+  - item: stacklet_account_discovery_gcp (Terraform resource + data source)
+    superseded_by: stacklet_gcp_integration
+    announced: '2026-06-29'
+    channel: Terraform provider CHANGELOG 0.8.2
+    note: 'A deprecation announced in a client changelog. Stacklet publishes no deprecation
+      policy, no sunset dates and no Deprecation/Sunset response headers, so no Deprecation
+      pointer is emitted — a single observed deprecation is practice, not policy.'
+status_page:
+  published: false
+  probed:
+  - url: https://status.stacklet.io
+    status: NXDOMAIN
+  - url: https://stacklet.ai/status/
+    status: 404
+  note: No status page is served on any resolvable Stacklet host. Availability of a
+    single-tenant deployment is presumably communicated per customer.
+sla:
+  published: false
+  note: 'No public SLA. Terms of service at https://stacklet.ai/terms-of-service/ cover the
+    website; commercial terms arrive through the sales or AWS Marketplace path.'
+support:
+  channel: https://stacklet.ai/contact/
+  github_issues: https://github.com/stacklet
+end_of_life:
+  observed: []

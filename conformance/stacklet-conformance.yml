@@ -1,0 +1,87 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/stacklet-admin#readme, https://github.com/stacklet/mcp-server,
+  https://github.com/stacklet/terraform-provider-stacklet, https://stacklet.ai/security-compliance/
+note: 'No machine-readable contract is publicly available (the GraphQL schema is
+  introspected per customer deployment and is auth-gated), so every assertion below is
+  drawn from Stacklet''s own first-party client code and documentation rather than from a
+  spec this pipeline could parse.'
+conformance:
+- id: graphql
+  conforms: true
+  evidence: 'The Platform API is a GraphQL endpoint. The Terraform provider posts GraphQL
+    documents to https://api.<INSTANCE_NAME>.stacklet.io/, and the MCP server runs a
+    standard introspection query against the same endpoint to build its schema cache.'
+- id: relay-connections
+  conforms: true
+  evidence: 'Responses use Relay cursor connections — edges[].node plus pageInfo with
+    startCursor, endCursor, hasNextPage and hasPreviousPage — and the CLI exposes
+    --first/--last/--after/--before. Documented at
+    https://github.com/stacklet/stacklet-admin#pagination'
+- id: pagination
+  conforms: true
+  evidence: Cursor-based pagination, see relay-connections.
+- id: oauth2
+  conforms: true
+  evidence: 'Authentication is an OAuth 2.0 authorization-code SSO flow brokered by AWS
+    Cognito (stacklet-admin login), with a password grant fallback and Bearer tokens in the
+    Authorization header.'
+- id: oidc
+  conforms: partial
+  evidence: 'AWS Cognito user pools are OIDC providers and the CLI stores a separate
+    identity token alongside the access token, which implies an OIDC id_token. No
+    /.well-known/openid-configuration is served on any publicly resolvable Stacklet host
+    (404 on stacklet.ai and stacklet.io), so this cannot be verified anonymously.'
+- id: rfc9457
+  conforms: false
+  evidence: 'Errors are returned in the GraphQL errors array; the Terraform provider
+    changelog 0.8.2 describes surfacing the GraphQL message on HTTP 400. No
+    application/problem+json surface is published.'
+- id: idempotency
+  conforms: false
+  evidence: No idempotency key, retry-safety guidance or deduplication window is documented
+    on any public surface.
+- id: mcp
+  conforms: true
+  evidence: 'Stacklet publishes an MCP server (stacklet-mcp on PyPI, source at
+    github.com/stacklet/mcp-server) built on FastMCP, exposing 16 tools across three
+    toolsets over stdio. See mcp/stacklet-mcp.yml.'
+- id: a2a
+  conforms: false
+  evidence: '/.well-known/agent-card.json and /.well-known/agent.json both 404 on
+    stacklet.ai and stacklet.io.'
+- id: asyncapi
+  conforms: false
+  evidence: 'No event, streaming or webhook contract is published. Outbound notification is
+    configured per integration (Slack, Jira, ServiceNow, Microsoft Teams, Symphony, email,
+    resource-owner and account-owner profiles) rather than exposed as a subscribable
+    webhook catalog.'
+- id: scim
+  conforms: false
+  evidence: 'User and group provisioning is exposed as first-class Platform objects
+    (stacklet_user, stacklet_sso_group, stacklet_role_assignment) and through SSO group
+    mapping, not through a SCIM schema URN.'
+- id: terraform-provider-protocol
+  conforms: true
+  evidence: 'Published to the Terraform Registry as stacklet/stacklet, built on the
+    terraform-plugin-framework; 25 resources and 24 data sources documented at
+    https://registry.terraform.io/providers/stacklet/stacklet/latest/docs'
+domain_standard:
+  market: cloud governance / cloud security posture management
+  declared_in_contract: false
+  detail: 'The market''s standards — CIS Benchmarks, NIST CSF, PCI-DSS, HIPAA, SOC 2, GDPR
+    — appear in Stacklet''s policy library rather than in its contract. The security and
+    compliance page claims "over 1,500 up-to-date policies for frameworks like NIST CSF,
+    PCI-DSS, HIPAA, and CIS Benchmarks", which is content shipped as Cloud Custodian policy
+    YAML, not a conformance assertion the API makes about itself. There is no OSCAL, OCSF or
+    SCAP surface, and no machine-readable declaration of a framework in any published
+    artifact. Recorded as absent rather than credited: this is a reward-only check and
+    nothing in the contract earns it.'
+  evidence_url: https://stacklet.ai/security-compliance/
+own_certifications:
+  published: false
+  detail: 'The frameworks Stacklet names are the ones its product helps customers enforce.
+    Stacklet publishes no trust center, no SOC 2 or ISO 27001 attestation and no
+    certification page of its own — probes of https://stacklet.ai/trust/ and
+    https://stacklet.ai/security/ both returned 404 — so no Compliance or TrustCenter
+    pointer is emitted.'

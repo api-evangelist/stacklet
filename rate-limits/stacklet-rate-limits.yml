@@ -1,0 +1,34 @@
+generated: '2026-08-29'
+method: searched
+source: https://github.com/stacklet/stacklet-admin, https://github.com/stacklet/terraform-provider-stacklet,
+  https://github.com/stacklet/mcp-server
+limit_count: 0
+note: 'No rate limits are published for the Stacklet Platform GraphQL API. None of the three
+  first-party clients — the CLI, the Terraform provider or the MCP server — reads, honours or
+  mentions a rate-limit response header, a 429 status, or a Retry-After value, and no public
+  documentation host exists to state one. The API is single-tenant per customer deployment,
+  which is the most likely reason no shared quota is advertised, but no limit is stated
+  either way. Recorded as an honest zero.'
+rate_limits: []
+response_headers:
+  observed: []
+  documented: []
+exhaustion_status: not documented
+related_controls:
+- name: STACKLET_PAGE_SIZE
+  type: client pagination control
+  description: 'Terraform provider environment variable overriding the default GraphQL page
+    size (added in provider 0.8.0). A throughput control the client sets, not a server-side
+    limit the API enforces.'
+- name: Asynchronous dataset export
+  type: bulk-read escape hatch
+  description: 'Large connections are exported asynchronously through platform_dataset_export
+    and collected from a temporary download URL, rather than paged synchronously — the
+    published pattern for avoiding heavy repeated queries.'
+- name: AssetDB query guidance
+  type: advisory
+  description: 'The MCP server ships an AssetDB SQL guide warning that many tables are
+    extremely large and require careful indexing and filtering to avoid timeouts. Timeouts,
+    not quotas, are the documented failure mode.'
+gaps:
+- No documented limit, window, burst, header or exhaustion status code on any public surface.
