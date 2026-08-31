@@ -28,6 +28,22 @@ tags:
 - Infrastructure as Code
 - Terraform
 - GraphQL
+- MCP
+- AWS
+- Azure
+- Google Cloud
+- Agents
+tags_raw:
+- Company
+- Cloud Governance
+- Cloud Custodian
+- Policy as Code
+- FinOps
+- Cloud Security
+- Compliance
+- Infrastructure as Code
+- Terraform
+- GraphQL
 - Model Context Protocol
 - AWS
 - Azure
@@ -76,6 +92,9 @@ apis:
   humanURL: https://github.com/stacklet/mcp-server
   baseURL: https://api.{instance}.stacklet.io/
   tags:
+  - MCP
+  - Agents
+  tags_raw:
   - Model Context Protocol
   - Agents
   properties:
