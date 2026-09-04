@@ -10,6 +10,20 @@ description: 'Stacklet is a cloud governance company founded by the creators of 
   open-source Model Context Protocol server that exposes AssetDB SQL, Platform GraphQL
   and documentation tools to AI agents. The company operates its marketing surface at
   stacklet.ai, to which stacklet.io redirects.'
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-02'
+  method: derived
 image: https://stacklet.ai/wp-content/uploads/2024/09/Social-Share-1.jpg
 url: https://raw.githubusercontent.com/api-evangelist/stacklet/refs/heads/main/apis.yml
 x-type: company
