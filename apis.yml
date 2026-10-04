@@ -10,6 +10,21 @@ description: 'Stacklet is a cloud governance company founded by the creators of 
   open-source Model Context Protocol server that exposes AssetDB SQL, Platform GraphQL
   and documentation tools to AI agents. The company operates its marketing surface at
   stacklet.ai, to which stacklet.io redirects.'
+deliveryModel:
+  model: saas
+  license_evidence:
+    not_product:
+    - stacklet/mcp-server
+  open_source: unknown
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: low
+  source:
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
